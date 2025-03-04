@@ -10,17 +10,9 @@ namespace ThePrototype.Scripts.Manager.SO
         Crop = 1,
         Building = 2
     }
+    
 
-    public abstract class PlaceableEntitySO : ScriptableObject
-    {
-        public string objectName;
-        public EntityType objectType;
-        public GameObject prefab;
-        public int cost;
-        public Vector2Int size;
-    }
-
-    [CreateAssetMenu(fileName = "EntityDatabase", menuName = "PlaceableEntity/Database")]
+    [CreateAssetMenu(fileName = "EntityDatabase", menuName = "EntityDatabase/Database")]
     public class EntityDatabaseSO : ScriptableObject
     {
         public List<PlaceableEntitySO> entityData;

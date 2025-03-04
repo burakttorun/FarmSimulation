@@ -1,5 +1,7 @@
+using System;
 using BasicArchitecturalStructure;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace ThePrototype.Scripts.Manager
 {
@@ -13,7 +15,7 @@ namespace ThePrototype.Scripts.Manager
         private RaycastHit _hit;
 
         private float _lastRaycastTime;
-        private float _raycastInterval = 0.02f;
+        private const float RaycastInterval = 0.02f;
 
         #endregion
 
@@ -23,44 +25,107 @@ namespace ThePrototype.Scripts.Manager
             _sceneCamera = Camera.main;
         }
 
+        private void Update()
+        {
+            CheckClick();
+        }
+
+        public bool IsPointerOverUI() => EventSystem.current.IsPointerOverGameObject();
+
         public Vector3 GetSelectedMapPosition(LayerMask placementLayerMask)
         {
-            if (Time.time - _lastRaycastTime < _raycastInterval)
+            if (Time.time - _lastRaycastTime < RaycastInterval)
                 return _lastPosition;
-
+            
             _lastRaycastTime = Time.time;
 
-            bool hasInput = false;
-            Vector2 screenPos = Vector2.zero;
-
-            if (Application.isEditor || SystemInfo.deviceType == DeviceType.Desktop)
-            {
-                if (Input.GetMouseButton(0))
-                {
-                    hasInput = true;
-                    screenPos = Input.mousePosition;
-                }
-            }
-            else if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved)
-                {
-                    hasInput = true;
-                    screenPos = touch.position;
-                }
-            }
-
-            if (hasInput)
+            if (TryGetScreenPosition(out Vector2 screenPos))
             {
                 _ray = _sceneCamera.ScreenPointToRay(screenPos);
-                if (Physics.Raycast(_ray, out _hit, 100, placementLayerMask))
+                if (Physics.Raycast(_ray, out _hit, 50, placementLayerMask))
                 {
                     _lastPosition = _hit.point;
                 }
             }
 
             return _lastPosition;
+        }
+
+        private bool TryGetScreenPosition(out Vector2 screenPos)
+        {
+            screenPos = Vector2.zero;
+
+            if (IsDesktopPlatform())
+            {
+                screenPos = Input.mousePosition;
+                return true;
+            }
+            else
+            {
+                Touch touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved)
+                {
+                    screenPos = touch.position;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void CheckClick()
+        {
+            if (IsDesktopPlatform())
+            {
+                HandleDesktopInput();
+            }
+            else
+            {
+                HandleTouchInput();
+            }
+        }
+
+        private bool IsDesktopPlatform()
+        {
+            return Application.isEditor || SystemInfo.deviceType == DeviceType.Desktop;
+        }
+
+        private void HandleDesktopInput()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                PublishClickEvent();
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                PublishExitEvent();
+            }
+        }
+
+        private void HandleTouchInput()
+        {
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Began)
+                {
+                    PublishClickEvent();
+                }
+                else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                {
+                    PublishExitEvent();
+                }
+            }
+        }
+
+        private void PublishClickEvent()
+        {
+            EventBus<OnClick>.Publish(new OnClick { clickPosition = _lastPosition });
+        }
+
+        private void PublishExitEvent()
+        {
+            EventBus<OnExit>.Publish(new OnExit() { lastPosition = _lastPosition });
         }
     }
 }

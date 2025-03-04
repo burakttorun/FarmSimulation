@@ -9,14 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a82d49eb758eb854d90d4b236f1648ea, type: 3}
-  m_Name: Silo
+  m_Script: {fileID: 11500000, guid: 9eb27bd2cee3e0a4594199486dd4a656, type: 3}
+  m_Name: Soil
   m_EditorClassIdentifier: 
-  id: 1
-  objectName: Silo
-  objectType: 2
-  prefab: {fileID: 1069362831596896485, guid: 42137977e647e8543b4541a544c08736, type: 3}
-  cost: 100
-  size: {x: 2, y: 2}
-  maxWorkers: 5
-  productionRate: 10
+  objectName: Soil
+  objectType: 0
+  prefab: {fileID: 991934203942608080, guid: ee586775ee3c00943b2245bbcc0d48c1, type: 3}
+  cost: 5
+  size: {x: 1, y: 1}
