@@ -2,11 +2,14 @@ using System;
 using BasicArchitecturalStructure;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace ThePrototype.Scripts.Manager
 {
     public class InputManager : BasicSingleton<InputManager>
     {
+        [SerializeField] private LayerMask _placementLayerMask;
+
         #region CachedData
 
         private Camera _sceneCamera;
@@ -32,17 +35,17 @@ namespace ThePrototype.Scripts.Manager
 
         public bool IsPointerOverUI() => EventSystem.current.IsPointerOverGameObject();
 
-        public Vector3 GetSelectedMapPosition(LayerMask placementLayerMask)
+        public Vector3 GetSelectedMapPosition()
         {
             if (Time.time - _lastRaycastTime < RaycastInterval)
                 return _lastPosition;
-            
+
             _lastRaycastTime = Time.time;
 
             if (TryGetScreenPosition(out Vector2 screenPos))
             {
                 _ray = _sceneCamera.ScreenPointToRay(screenPos);
-                if (Physics.Raycast(_ray, out _hit, 50, placementLayerMask))
+                if (Physics.Raycast(_ray, out _hit, 50, _placementLayerMask))
                 {
                     _lastPosition = _hit.point;
                 }
@@ -126,6 +129,18 @@ namespace ThePrototype.Scripts.Manager
         private void PublishExitEvent()
         {
             EventBus<OnExit>.Publish(new OnExit() { lastPosition = _lastPosition });
+        }
+
+        public Vector3 GetTouchWorldPosition()
+        {
+            if (Input.touchCount > 0)
+            {
+                Vector3 touchPosition = Input.GetTouch(0).position;
+                touchPosition.z = _sceneCamera.nearClipPlane + 2f;
+                return _sceneCamera.ScreenToWorldPoint(touchPosition);
+            }
+
+            return Vector3.zero;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace BasicArchitecturalStructure
@@ -12,7 +13,7 @@ namespace BasicArchitecturalStructure
 
         public static void Publish(T eventToPublish)
         {
-            foreach (IEventBinding<T> binding in _bindings)
+            foreach (IEventBinding<T> binding in _bindings.ToList())
             {
                 binding.OnEvent?.Invoke(eventToPublish);
                 binding.OnEventNoArgs?.Invoke();

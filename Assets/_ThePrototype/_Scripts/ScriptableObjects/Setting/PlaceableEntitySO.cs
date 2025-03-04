@@ -3,7 +3,6 @@ using UnityEngine;
 namespace ThePrototype.Scripts.Manager.SO
 {
     [CreateAssetMenu(fileName = "PlaceableEntity", menuName = "Farming/Soil")]
-
     public class PlaceableEntitySO : ScriptableObject
     {
         public int id;
@@ -13,5 +12,6 @@ namespace ThePrototype.Scripts.Manager.SO
         public int cost;
         public Vector2Int size;
         public LayerMask placementLayer;
+        public Sprite icon;
     }
 }

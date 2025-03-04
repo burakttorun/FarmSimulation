@@ -92,6 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4124867829698346547}
+  - component: {fileID: -6543338084578808442}
   m_Layer: 0
   m_Name: PotatoEntity
   m_TagString: Untagged
@@ -115,3 +116,16 @@ Transform:
   - {fileID: 4879391853381861866}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6543338084578808442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1349732958495247871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328a2e9b85b00c44f8e118671a8e181d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cropUI: {fileID: 0}

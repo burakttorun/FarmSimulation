@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a82d49eb758eb854d90d4b236f1648ea, type: 3}
+  m_Name: Barn
+  m_EditorClassIdentifier: 
+  id: 4
+  objectName: Barn
+  objectType: 2
+  prefab: {fileID: 4848258993907055632, guid: edbdc393063ea9440937c1f93614ca41, type: 3}
+  cost: 100
+  size: {x: 3, y: 3}
+  placementLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  icon: {fileID: 21300000, guid: 2df5ddc68c4472d43b75fc1f59763079, type: 3}
+  maxWorkers: 10
+  productionRate: 20

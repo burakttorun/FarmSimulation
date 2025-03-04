@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9751a9d93d7e9fd45b34e7dd93461c52, type: 3}
+  m_Name: _CropDatabase
+  m_EditorClassIdentifier: 
+  entityData:
+  - {fileID: 11400000, guid: 879fc1244d89e63469de17c433a9cbc7, type: 2}
+  - {fileID: 11400000, guid: c8c5669a8e774f24ab0e1aa5ca530c29, type: 2}

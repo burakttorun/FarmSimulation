@@ -1,34 +1,34 @@
 using System;
+using BasicArchitecturalStructure;
 using UnityEngine;
 
 namespace ThePrototype.Scripts.Manager
 {
-    [Serializable]
-    public struct IndicatorSetting
-    {
-        public LayerMask placementLayer;
-    }
-
-    public class IndicatorManager : MonoBehaviour
+    public class IndicatorManager : BasicSingleton<IndicatorManager>
     {
         [field: Header("Reference")]
-        [field: SerializeField]
-        private GameObject MouseIndicator { get; set; }
-
-        [field: SerializeField] private GameObject CellIndicator { get; set; }
         [field: SerializeField] private Grid Grid { get; set; }
 
-        [field: Header("Settings")]
-        [field: SerializeField]
-        public IndicatorSetting Setting { get; private set; }
+        #region CashedData
 
+        private Transform _transform;
+
+        #endregion
+        
+        [HideInInspector] public GameObject CurrentItem { get; set; }
+        protected override void Awake()
+        {
+            base.Awake();
+            _transform = transform;
+        }
 
         private void Update()
         {
-            Vector3 mousePosition = InputManager.Instance.GetSelectedMapPosition(Setting.placementLayer);
+            if (InputManager.Instance.IsPointerOverUI()) return;
+
+            Vector3 mousePosition = InputManager.Instance.GetSelectedMapPosition();
             Vector3Int gridPosition = Grid.WorldToCell(mousePosition);
-            MouseIndicator.transform.position = mousePosition;
-            CellIndicator.transform.position = Grid.GetCellCenterWorld(gridPosition);
+            _transform.position = Grid.GetCellCenterWorld(gridPosition);
         }
     }
 }

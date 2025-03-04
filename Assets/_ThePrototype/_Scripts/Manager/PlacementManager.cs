@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using BasicArchitecturalStructure;
 using ThePrototype.Scripts.Manager.SO;
 using UnityEngine;
 
@@ -9,64 +8,116 @@ namespace ThePrototype.Scripts.Manager
 {
     public class PlacementManager : MonoBehaviour
     {
-        [Header("Reference")] [SerializeField] private EntityDatabaseSO _database;
+        [field: Header("Reference")] [field: SerializeField]
+        private GameObject _placementUI;
 
-        [SerializeField] private GameObject _gridVisualization, _cellIndicator;
-        [SerializeField] private Grid _grid;
+        [field: SerializeField] private Transform _itemVisual;
 
-        private EventBinding<OnClick> _onClickEventBinding;
-        private EventBinding<OnExit> _onExitEventBinding;
+        private GameObject _cellIndicator;
 
-        private int _selectedObjectIndex = -1;
+        #region CashedData
+
+        private Transform _transform;
+
+        #endregion
+
+        private bool _canDragable = true;
+        private bool _rotated;
+        public GameObject HasCropEntity { get; set; }
+
 
         private void Awake()
         {
-            _onClickEventBinding = new EventBinding<OnClick>(PlaceStructure);
-            _onExitEventBinding = new EventBinding<OnExit>(StopPlacement);
+            _transform = transform;
+            _cellIndicator = IndicatorManager.Instance.gameObject;
         }
 
-
-        private void Start()
+        private void Update()
         {
-            StopPlacement();
+            if (!_canDragable) return;
+
+
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+
+                switch (touch.phase)
+                {
+                    case TouchPhase.Moved:
+                        DragObject();
+                        break;
+
+                    case TouchPhase.Ended:
+                        OpenSelectionUI();
+                        break;
+                }
+            }
         }
 
-        public void StartPlacement(int id)
+        private void DragObject()
         {
-            StopPlacement();
-            _selectedObjectIndex = _database.entityData.FindIndex(x => x.id == id);
-            if (_selectedObjectIndex < 0)
+            _transform.position = _cellIndicator.transform.position;
+        }
+
+        private void OpenSelectionUI()
+        {
+            _placementUI.SetActive(true);
+        }
+
+        public void ReleaseItem()
+        {
+            _canDragable = false;
+            _placementUI.SetActive(false);
+            IndicatorManager.Instance.CurrentItem = null;
+        }
+
+        public void DeleteItem()
+        {
+            ReleaseItem();
+            Destroy(gameObject);
+        }
+
+        public void RotateItem()
+        {
+            if (HasCropEntity != null) return;
+
+            if (!_rotated)
+            {
+                _itemVisual.transform.Rotate(new Vector3(0, 90, 0));
+            }
+            else
+            {
+                _itemVisual.transform.Rotate(Vector3.zero);
+            }
+        }
+
+        public void ReplaceItem()
+        {
+            if (HasCropEntity != null) return;
+
+            _canDragable = true;
+            _placementUI.SetActive(false);
+            IndicatorManager.Instance.CurrentItem = gameObject;
+        }
+
+        public void StartCropPlacement(EntityDatabaseSO databaseSo, int id,GameObject cropUI)
+        {
+            if (HasCropEntity != null) return;
+            var selectedObjectIndex = databaseSo.entityData.FindIndex(x => x.id == id);
+            if (selectedObjectIndex < 0)
             {
                 Debug.LogError($"No Id found {id}");
                 return;
             }
 
-            _gridVisualization.SetActive(true);
+            var placementItem = databaseSo.entityData[selectedObjectIndex];
+
+            GameObject newItem = Instantiate(placementItem.prefab);
+            newItem.GetComponent<CropEntityManager>()._cropUI = cropUI;
+            newItem.transform.position = _cellIndicator.transform.position;
+            IndicatorManager.Instance.CurrentItem = newItem;
             _cellIndicator.SetActive(true);
-
-            EventBus<OnClick>.Subscribe(_onClickEventBinding);
-            EventBus<OnExit>.Subscribe(_onExitEventBinding);
-        }
-
-        private void StopPlacement()
-        {
-            _selectedObjectIndex = -1;
-            _gridVisualization.SetActive(false);
-            _cellIndicator.SetActive(false);
-
-            EventBus<OnClick>.Unsubscribe(_onClickEventBinding);
-            EventBus<OnExit>.Unsubscribe(_onExitEventBinding);
-        }
-
-        private void PlaceStructure(OnClick data)
-        {
-            if (InputManager.Instance.IsPointerOverUI()) return;
             
-            var placementItem = _database.entityData[_selectedObjectIndex];
-            Vector3 mousePosition = InputManager.Instance.GetSelectedMapPosition(placementItem.placementLayer);
-            Vector3Int gridPosition = _grid.WorldToCell(mousePosition);
-            GameObject newObject = Instantiate(placementItem.prefab);
-            newObject.transform.position = _grid.GetCellCenterWorld(gridPosition);
         }
     }
 }
