@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ThePrototype.Scripts.Manager.SO;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ThePrototype.Scripts.Manager
 {
@@ -11,7 +12,8 @@ namespace ThePrototype.Scripts.Manager
         [field: Header("Reference")] [field: SerializeField]
         private GameObject _placementUI;
 
-        [field: SerializeField] private Transform _itemVisual;
+        [FormerlySerializedAs("_itemVisual")] [field: SerializeField]
+        public Transform itemVisual;
 
         private GameObject _cellIndicator;
 
@@ -83,11 +85,11 @@ namespace ThePrototype.Scripts.Manager
 
             if (!_rotated)
             {
-                _itemVisual.transform.Rotate(new Vector3(0, 90, 0));
+                itemVisual.transform.Rotate(new Vector3(0, 90, 0));
             }
             else
             {
-                _itemVisual.transform.Rotate(Vector3.zero);
+                itemVisual.transform.Rotate(Vector3.zero);
             }
         }
 
@@ -100,7 +102,7 @@ namespace ThePrototype.Scripts.Manager
             IndicatorManager.Instance.CurrentItem = gameObject;
         }
 
-        public void StartCropPlacement(EntityDatabaseSO databaseSo, int id,GameObject cropUI)
+        public void StartCropPlacement(EntityDatabaseSO databaseSo, int id, GameObject cropUI)
         {
             if (HasCropEntity != null) return;
             var selectedObjectIndex = databaseSo.entityData.FindIndex(x => x.id == id);
@@ -112,12 +114,7 @@ namespace ThePrototype.Scripts.Manager
 
             var placementItem = databaseSo.entityData[selectedObjectIndex];
 
-            GameObject newItem = Instantiate(placementItem.prefab);
-            newItem.GetComponent<CropEntityManager>()._cropUI = cropUI;
-            newItem.transform.position = _cellIndicator.transform.position;
-            IndicatorManager.Instance.CurrentItem = newItem;
-            _cellIndicator.SetActive(true);
-            
+            InstantiateManager.Instance.CreateCropEntity(cropUI, placementItem.prefab);
         }
     }
 }

@@ -8,7 +8,6 @@ namespace ThePrototype.Scripts.Manager.SO
 
     public class CropSO : PlaceableEntitySO
     {
-        public GameObject[] growthStages; 
         public float growthTime;
     }
 }

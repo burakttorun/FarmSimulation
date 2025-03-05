@@ -1,15 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using BasicArchitecturalStructure;
+using ThePrototype.Scripts.Manager.SO;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ThePrototype.Scripts.Manager
 {
     public class CropEntityManager : MonoBehaviour
     {
-        [field: Header("Reference")] [field: HideInInspector]
-        public GameObject _cropUI;
+        [field: Header("Reference")] [SerializeField]
+        private CropSO _settings;
 
-        private GameObject _cellIndicator;
+        [field: HideInInspector] public GameObject _cropUI;
+        private PlacementManager _currentPlacementEntity;
+        private GrowthManager _currentGrowthManager;
 
         #region CashedData
 
@@ -22,13 +29,12 @@ namespace ThePrototype.Scripts.Manager
         private void Awake()
         {
             _transform = transform;
-            _cellIndicator = IndicatorManager.Instance.gameObject;
         }
 
         private void Update()
         {
             if (_canDragable) return;
-
+            CloseUI();
 
             if (Input.touchCount > 0)
             {
@@ -36,9 +42,6 @@ namespace ThePrototype.Scripts.Manager
 
                 switch (touch.phase)
                 {
-                    case TouchPhase.Began:
-                        CloseUI();
-                        break;
                     case TouchPhase.Moved:
                         DragObject();
                         break;
@@ -47,6 +50,21 @@ namespace ThePrototype.Scripts.Manager
                         ReleaseItem();
                         break;
                 }
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Soil") && other.TryGetComponent(out PlacementManager placementManager))
+            {
+                _currentPlacementEntity = placementManager;
+                if (_currentPlacementEntity.HasCropEntity != null) return;
+
+                var createdEntity = Instantiate(_settings.prefab);
+                _currentPlacementEntity.HasCropEntity = createdEntity;
+                createdEntity.transform.position = _currentPlacementEntity.itemVisual.transform.position;
+                _currentGrowthManager = createdEntity.GetComponent<GrowthManager>();
+                EventBus<OnPlanted>.Publish(new OnPlanted());
             }
         }
 
@@ -63,8 +81,16 @@ namespace ThePrototype.Scripts.Manager
         public void ReleaseItem()
         {
             _canDragable = false;
-            _cropUI.SetActive(false);
+            CloseUI();
             IndicatorManager.Instance.CurrentItem = null;
+            Destroy(gameObject);
+        }
+
+        public void HarvestItem()
+        {
+                _currentPlacementEntity.HasCropEntity = null;
+                _currentGrowthManager = null;
+                Destroy(gameObject);
         }
     }
 }

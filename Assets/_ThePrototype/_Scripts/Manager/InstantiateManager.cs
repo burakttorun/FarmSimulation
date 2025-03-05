@@ -7,11 +7,10 @@ using UnityEngine;
 
 namespace ThePrototype.Scripts.Manager
 {
-    public class InstantiateManager : MonoBehaviour
+    public class InstantiateManager : BasicSingleton<InstantiateManager>
     {
-        [Header("Reference")] 
-        [SerializeField] private EntityDatabaseSO _database;
-        [SerializeField] private GameObject _gridVisualization, _cellIndicator;
+        [Header("Reference")] [SerializeField] private EntityDatabaseSO _database;
+        [SerializeField] private GameObject _gridVisualization, _cellIndicator, _harvestEntity;
 
         private int _selectedObjectIndex = -1;
 
@@ -44,13 +43,31 @@ namespace ThePrototype.Scripts.Manager
 
         private void CreateItem()
         {
-            if (InputManager.Instance.IsPointerOverUI()|| IndicatorManager.Instance.CurrentItem!=null) return;
-            
+            if (InputManager.Instance.IsPointerOverUI() || IndicatorManager.Instance.CurrentItem != null) return;
+
             var placementItem = _database.entityData[_selectedObjectIndex];
 
             GameObject newItem = Instantiate(placementItem.prefab);
             newItem.transform.position = _cellIndicator.transform.position;
             IndicatorManager.Instance.CurrentItem = newItem;
+        }
+
+        public void CreateCropEntity(GameObject cropUI, GameObject placementItem)
+        {
+            GameObject newItem = Instantiate(placementItem);
+            Destroy(newItem.GetComponent<GrowthManager>());
+            newItem.GetComponent<CropEntityManager>()._cropUI = cropUI;
+            newItem.transform.position = _cellIndicator.transform.position;
+            IndicatorManager.Instance.CurrentItem = newItem;
+            _cellIndicator.SetActive(true);
+        }
+
+        public void CreateHarvestEntity()
+        {
+            GameObject createdItem = Instantiate(_harvestEntity);
+            createdItem.transform.position = _cellIndicator.transform.position;
+            IndicatorManager.Instance.CurrentItem = createdItem;
+            _cellIndicator.SetActive(true);
         }
     }
 }
