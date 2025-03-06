@@ -72,6 +72,7 @@ namespace ThePrototype.Scripts.Manager
 
         private void OpenSelectionUI()
         {
+            _canDragable = false;
             placementUI.SetActive(true);
         }
 
@@ -90,7 +91,6 @@ namespace ThePrototype.Scripts.Manager
             _canDragable = false;
             placementUI.SetActive(false);
             IndicatorManager.Instance.CurrentItem = null;
-            InstantiateManager.Instance.StopPlacement();
         }
 
 
