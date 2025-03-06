@@ -21,6 +21,5 @@ MonoBehaviour:
   placementLayer:
     serializedVersion: 2
     m_Bits: 0
-  icon: {fileID: 21300000, guid: 78572beaf248a9441ade98715b607fe9, type: 3}
-  growthStages: []
+  icon: {fileID: 21300000, guid: 444232796a874e44683ff0da605343f9, type: 3}
   growthTime: 3
