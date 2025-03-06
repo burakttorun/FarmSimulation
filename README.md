@@ -2,7 +2,7 @@
 Bu proje, Unity kullanılarak geliştirilen modüler bir tarım simülasyonu sistemidir. Oyuncular belirli alanlara ekin ekebilir, ekinlerin büyümesini takip edebilir ve olgunlaşan mahsulleri hasat edebilir.
 
 Sistem event-driven (olay tabanlı) bir mimariye sahiptir ve modüler bir şekilde genişletilebilir.
-
+![Image_Alt](https://github.com/burakttorun/FarmSimulation/blob/bde293e013d20b59e2dc3081477d0889dc9d5552/SS_Files/ss_2.jpeg)
 📌 Özellikler
 ✅ Ekim Sistemi
 
@@ -30,10 +30,11 @@ Modüler ve genişletilebilir bir yapı sunar.
 
 Event tabanlı sistemler kullanılarak gereksiz hesaplamalar minimize edilmiştir.
 Minimal UI update cycle kullanılarak UI performansı optimize edilmiştir.
+
+![Image_Alt](https://github.com/burakttorun/FarmSimulation/blob/bde293e013d20b59e2dc3081477d0889dc9d5552/SS_Files/ss_1.jpeg)
 ⚙️ Kullanılan Teknolojiler & Sistem Mimarisi
 🛠️ Teknolojiler
 Unity Engine (Ana oyun motoru - Unity 2022.3+)
-C# (Oyun mekaniği ve sistemler için ana dil)
 Scriptable Objects (SO) (Veri yönetimi ve konfigürasyon için)
 EventBus Yapısı (Oyun içi event yönetimi için)
 Singleton Design Pattern (Global yöneticiler için Persistent Singleton kullanımı)
@@ -56,6 +57,7 @@ Platform olarak Android'i seçin ve Switch Platform yapın.
 Build And Run ile APK dosyanızı oluşturun.
 4️⃣ Oyunu Mobilde Test Edin
 
+![Image_Alt](https://github.com/burakttorun/FarmSimulation/blob/bde293e013d20b59e2dc3081477d0889dc9d5552/SS_Files/ss_3.jpeg)
 APK’yı cihazınıza yükleyerek dokunmatik kontrollerle test edebilirsiniz.
 🎯 Temel Oyun Mekaniklerini Deneyin:
 ✅ Ekim – Bir ekin seçin ve haritaya yerleştirin.
