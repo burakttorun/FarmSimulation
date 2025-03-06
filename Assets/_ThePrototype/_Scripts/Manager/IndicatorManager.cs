@@ -1,6 +1,7 @@
 using System;
 using BasicArchitecturalStructure;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ThePrototype.Scripts.Manager
 {
@@ -16,10 +17,20 @@ namespace ThePrototype.Scripts.Manager
         #endregion
         
         [HideInInspector] public GameObject CurrentItem { get; set; }
+        
+        
+        public GridData entityData;
+        private Renderer _previewRenderer;
+        public Vector3Int gridPosition;
         protected override void Awake()
         {
             base.Awake();
             _transform = transform;
+        }
+        private void Start()
+        {
+            entityData = new();
+            _previewRenderer = gameObject.GetComponentInChildren<Renderer>();
         }
 
         private void Update()
@@ -27,8 +38,21 @@ namespace ThePrototype.Scripts.Manager
             if (InputManager.Instance.IsPointerOverUI()) return;
 
             Vector3 mousePosition = InputManager.Instance.GetSelectedMapPosition();
-            Vector3Int gridPosition = Grid.WorldToCell(mousePosition);
+             gridPosition = Grid.WorldToCell(mousePosition);
+            
+            _previewRenderer.material.color = CheckPlacementValidity() ? Color.white : Color.red;
+            
             _transform.position = Grid.GetCellCenterWorld(gridPosition);
+            
         }
+        
+        public bool CheckPlacementValidity()
+        {
+            var instanceManager = InstantiateManager.Instance;
+
+            return entityData.CanPlaceObejctAt(gridPosition,
+                instanceManager.database.entityData[instanceManager.selectedObjectIndex].size);
+        }
+        
     }
 }

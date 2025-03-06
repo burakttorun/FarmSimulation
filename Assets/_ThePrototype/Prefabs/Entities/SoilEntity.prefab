@@ -69,7 +69,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3952f019968777439fed80913f61b0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _placementUI: {fileID: 6043603712410010201}
+  placementUI: {fileID: 6043603712410010201}
+  setting: {fileID: 11400000, guid: 594f3863fd6894f4c933f5ad034e767c, type: 2}
   itemVisual: {fileID: 6985917248952184371}
 --- !u!54 &5780529181223151679
 Rigidbody:
@@ -319,6 +320,11 @@ PrefabInstance:
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1705235411467541404}
+    - target: {fileID: 3865934830580918377, guid: 94c9b942e61317049999a570c405f54c,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlacedItem
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -63,18 +63,27 @@ namespace ThePrototype.Scripts.Manager
 
         void Update()
         {
+            if (_placementManager != null && _placementManager.placementUI.activeSelf)
+            {
+                ChangeCropUIVisible(false);
+                ChangeHarvestUIVisible(false);
+            }
+
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began &&
                 IndicatorManager.Instance.CurrentItem == null)
             {
                 Ray ray = _camera.ScreenPointToRay(Input.GetTouch(0).position);
                 RaycastHit hit;
 
-               
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~0, QueryTriggerInteraction.Ignore))
+
+                if (Physics.Raycast(ray, out hit, 100, ~0, QueryTriggerInteraction.Ignore))
                 {
                     if (hit.transform.TryGetComponent(out PlacementManager placementManager))
                     {
+                        if (placementManager.setting.objectType != EntityType.Soil) return;
+
                         _placementManager = placementManager;
+
                         if (_placementManager.HasCropEntity)
                         {
                             if (placementManager.HasCropEntity.TryGetComponent(out GrowthManager growthManager))
@@ -106,7 +115,7 @@ namespace ThePrototype.Scripts.Manager
             }
         }
 
-        
+
         private void ChangeCropUIVisible(bool data)
         {
             _isActiveCropUI = data;
@@ -117,6 +126,7 @@ namespace ThePrototype.Scripts.Manager
         {
             _harvestButtonContainer.gameObject.SetActive(data);
         }
+
         private void CreateButtons()
         {
             foreach (var entity in _entityDatabase.entityData)

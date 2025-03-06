@@ -4,26 +4,27 @@ using System.Collections.Generic;
 using BasicArchitecturalStructure;
 using ThePrototype.Scripts.Manager.SO;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ThePrototype.Scripts.Manager
 {
     public class InstantiateManager : BasicSingleton<InstantiateManager>
     {
-        [Header("Reference")] [SerializeField] private EntityDatabaseSO _database;
+         [Header("Reference")] public EntityDatabaseSO database;
         [SerializeField] private GameObject _gridVisualization, _cellIndicator, _harvestEntity;
 
-        private int _selectedObjectIndex = -1;
+        [HideInInspector] public int selectedObjectIndex = -1;
 
         private void Start()
         {
             StopPlacement();
         }
-
+        
         public void StartPlacement(int id)
         {
             StopPlacement();
-            _selectedObjectIndex = _database.entityData.FindIndex(x => x.id == id);
-            if (_selectedObjectIndex < 0)
+            selectedObjectIndex = database.entityData.FindIndex(x => x.id == id);
+            if (selectedObjectIndex < 0)
             {
                 Debug.LogError($"No Id found {id}");
                 return;
@@ -34,9 +35,9 @@ namespace ThePrototype.Scripts.Manager
             CreateItem();
         }
 
-        private void StopPlacement()
+        public void StopPlacement()
         {
-            _selectedObjectIndex = -1;
+            selectedObjectIndex = -1;
             _gridVisualization.SetActive(false);
             _cellIndicator.SetActive(false);
         }
@@ -45,7 +46,7 @@ namespace ThePrototype.Scripts.Manager
         {
             if (InputManager.Instance.IsPointerOverUI() || IndicatorManager.Instance.CurrentItem != null) return;
 
-            var placementItem = _database.entityData[_selectedObjectIndex];
+            var placementItem = database.entityData[selectedObjectIndex];
 
             GameObject newItem = Instantiate(placementItem.prefab);
             newItem.transform.position = _cellIndicator.transform.position;
